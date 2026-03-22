@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Orders — FixIt</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .orders-page { padding: 40px 80px 80px; max-width: 960px; margin: 0 auto; }
+
+    .page-header { margin-bottom: 36px; }
+    .page-header-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 0; }
+
+    /* ── FILTER TABS ── */
+    .filter-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 28px;
+    }
+
+    .filter-tab {
+      padding: 8px 18px;
+      border-radius: 100px;
+      border: 1.5px solid var(--gray-border);
+      background: var(--white);
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--gray-mid);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .filter-tab:hover { border-color: var(--orange); color: var(--orange); }
+    .filter-tab.active { background: var(--orange); border-color: var(--orange); color: var(--white); }
+
+    /* ── ORDER CARDS ── */
+    .orders-list { display: flex; flex-direction: column; gap: 16px; }
+
+    .order-card {
+      background: var(--white);
+      border: 1.5px solid var(--gray-border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      cursor: pointer;
+      transition: all 0.22s;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .order-card:hover {
+      border-color: var(--orange);
+      box-shadow: var(--shadow-md);
+      transform: translateX(3px);
+    }
+
+    .order-icon {
+      width: 56px; height: 56px;
+      border-radius: var(--radius-md);
+      background: var(--orange-pale);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.6rem;
+      flex-shrink: 0;
+    }
+
+    .order-info {}
+
+    .order-name {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 4px;
+    }
+
+    .order-meta {
+      font-size: 0.8rem;
+      color: var(--gray-mid);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .order-meta span { display: flex; align-items: center; gap: 4px; }
+
+    .order-right { text-align: right; flex-shrink: 0; }
+
+    .order-price {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 12px;
+      border-radius: 100px;
+      font-size: 0.72rem;
+      font-weight: 600;
+    }
+
+    .status-badge.upcoming { background: #EFF6FF; color: #3B82F6; }
+    .status-badge.completed { background: #DCFCE7; color: #16A34A; }
+    .status-badge.cancelled { background: #FEF2F2; color: #EF4444; }
+
+    /* ── EMPTY STATE ── */
+    .empty-state {
+      text-align: center;
+      padding: 80px 40px;
+    }
+
+    .empty-icon {
+      font-size: 3.5rem;
+      margin-bottom: 16px;
+    }
+
+    .empty-title {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+
+    .empty-sub {
+      font-size: 0.88rem;
+      color: var(--gray-mid);
+      margin-bottom: 28px;
+    }
+
+    /* ── ORDER DETAIL PANEL ── */
+    .detail-panel-overlay {
+      position: fixed; inset: 0;
+      background: rgba(26,26,46,0.45);
+      backdrop-filter: blur(4px);
+      z-index: 150;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.25s;
+    }
+
+    .detail-panel-overlay.open { opacity: 1; pointer-events: all; }
+
+    .detail-panel {
+      position: fixed;
+      top: 0; right: 0;
+      width: 480px; height: 100vh;
+      background: var(--white);
+      z-index: 151;
+      box-shadow: -8px 0 40px rgba(26,26,46,0.12);
+      transform: translateX(100%);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      overflow-y: auto;
+      display: flex; flex-direction: column;
+    }
+
+    .detail-panel-overlay.open .detail-panel { transform: translateX(0); }
+
+    .detail-panel-header {
+      padding: 24px 24px 20px;
+      border-bottom: 1px solid var(--gray-border);
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; background: var(--white); z-index: 1;
+    }
+
+    .detail-panel-close {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--gray-light); border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; color: var(--gray-dark); transition: all 0.2s;
+    }
+
+    .detail-panel-close:hover { background: var(--orange-pale); color: var(--orange); }
+
+    .detail-panel-body { padding: 24px; flex: 1; }
+
+    .order-detail-hero {
+      background: var(--orange-pale);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .order-detail-emoji { font-size: 2.8rem; margin-bottom: 10px; }
+
+    .order-detail-name {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--navy);
+      margin-bottom: 6px;
+    }
+
+    .detail-rows { display: flex; flex-direction: column; gap: 0; margin-bottom: 24px; }
+
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--gray-border);
+      font-size: 0.85rem;
+    }
+
+    .detail-row:last-child { border-bottom: none; }
+    .detail-row .label { color: var(--gray-mid); }
+    .detail-row .value { font-weight: 600; color: var(--navy); }
+
+    .rebook-section {
+      background: var(--gray-light);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .rebook-text { font-size: 0.82rem; color: var(--gray-dark); line-height: 1.5; }
+    .rebook-text strong { color: var(--navy); display: block; margin-bottom: 2px; }
+
+    /* ── STATS ROW ── */
+    .orders-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .orders-stat-card {
+      background: var(--white);
+      border: 1.5px solid var(--gray-border);
+      border-radius: var(--radius-md);
+      padding: 18px 20px;
+    }
+
+    .orders-stat-num {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--navy);
+      margin-bottom: 3px;
+    }
+
+    .orders-stat-label { font-size: 0.78rem; color: var(--gray-mid); }
+
+    @media (max-width: 768px) {
+      .orders-page { padding: 24px 20px 60px; }
+      .order-card { grid-template-columns: auto 1fr; }
+      .order-right { display: none; }
+      .detail-panel { width: 100%; }
+      .orders-stats { grid-template-columns: 1fr 1fr; }
+      .page-header-row { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+  <script>
+    !function(){var i="analytics",analytics=window[i]=window[i]||[];if(!analytics.initialize)if(analytics.invoked)window.console&&console.error&&console.error("Segment snippet included twice.");else{analytics.invoked=!0;analytics.methods=["trackSubmit","trackClick","trackLink","trackForm","pageview","identify","reset","group","track","ready","alias","debug","page","screen","once","off","on","addSourceMiddleware","addIntegrationMiddleware","setAnonymousId","addDestinationMiddleware","register"];analytics.factory=function(e){return function(){if(window[i].initialized)return window[i][e].apply(window[i],arguments);var n=Array.prototype.slice.call(arguments);if(["track","screen","alias","group","page","identify"].indexOf(e)>-1){var c=document.querySelector("link[rel='canonical']");n.push({__t:"bpc",c:c&&c.getAttribute("href")||void 0,p:location.pathname,u:location.href,s:location.search,t:document.title,r:document.referrer})}n.unshift(e);analytics.push(n);return analytics}};for(var n=0;n<analytics.methods.length;n++){var key=analytics.methods[n];analytics[key]=analytics.factory(key)}analytics.load=function(key,n){var t=document.createElement("script");t.type="text/javascript";t.async=!0;t.setAttribute("data-global-segment-analytics-key",i);t.src="https://cdn.segment.com/analytics.js/v1/"+key+"/analytics.min.js";var r=document.getElementsByTagName("script")[0];r.parentNode.insertBefore(t,r);analytics._loadOptions=n};analytics._writeKey="YOUR_WRITE_KEY";analytics._cdn="https://cdn.segment.com";analytics.SNIPPET_VERSION="5.2.1";
+    analytics.load("YOUR_WRITE_KEY");
+    }}();
+  </script>
+</head>
+<body>
+
+  <div id="navbarRoot"></div>
+  <div id="authModalRoot"></div>
+
+  <!-- Detail Panel -->
+  <div class="detail-panel-overlay" id="detailPanel">
+    <div class="detail-panel" id="detailPanelInner"></div>
+  </div>
+
+  <main class="page-content">
+    <div class="orders-page">
+
+      <div class="page-header">
+        <div class="page-header-row">
+          <div>
+            <div class="section-label">My Bookings</div>
+            <h1 class="section-title" style="margin-bottom:0">Order History</h1>
+          </div>
+          <a href="services.html" class="btn btn-primary">+ Book a Service</a>
+        </div>
+      </div>
+
+      <!-- Stats Row -->
+      <div class="orders-stats" id="ordersStats"></div>
+
+      <!-- Filter Tabs -->
+      <div class="filter-tabs">
+        <button class="filter-tab active" onclick="filterOrders('all', this)">All Orders</button>
+        <button class="filter-tab" onclick="filterOrders('upcoming', this)">Upcoming</button>
+        <button class="filter-tab" onclick="filterOrders('completed', this)">Completed</button>
+        <button class="filter-tab" onclick="filterOrders('cancelled', this)">Cancelled</button>
+      </div>
+
+      <!-- Orders List -->
+      <div class="orders-list" id="ordersList"></div>
+
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+  <script>
+    document.getElementById('navbarRoot').innerHTML = renderNavbar('My Orders');
+    document.getElementById('authModalRoot').innerHTML = renderAuthModal();
+
+    const user = Auth.require();
+
+    // Get this user's bookings
+    const allBookings = (Store.get('bookings') || [])
+      .filter(b => b.userId === user.id)
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+    // Segment: Order History Viewed
+    Segment.track('Order History Viewed', {
+      totalOrdersCount: allBookings.length,
+    });
+
+    // ── Stats ──
+    function renderStats(bookings) {
+      const total = bookings.length;
+      const upcoming = bookings.filter(b => b.status === 'upcoming').length;
+      const spent = bookings.filter(b => b.status === 'completed').reduce((s, b) => s + b.price, 0);
+
+      document.getElementById('ordersStats').innerHTML = `
+        <div class="orders-stat-card">
+          <div class="orders-stat-num">${total}</div>
+          <div class="orders-stat-label">Total Bookings</div>
+        </div>
+        <div class="orders-stat-card">
+          <div class="orders-stat-num">${upcoming}</div>
+          <div class="orders-stat-label">Upcoming</div>
+        </div>
+        <div class="orders-stat-card">
+          <div class="orders-stat-num">$${spent}</div>
+          <div class="orders-stat-label">Total Spent</div>
+        </div>
+      `;
+    }
+
+    // ── Render Orders ──
+    function renderOrders(bookings) {
+      const list = document.getElementById('ordersList');
+
+      if (bookings.length === 0) {
+        list.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">📋</div>
+            <div class="empty-title">No orders found</div>
+            <p class="empty-sub">You don't have any bookings in this category yet.</p>
+            <a href="services.html" class="btn btn-primary">Browse Services</a>
+          </div>`;
+        return;
+      }
+
+      list.innerHTML = bookings.map(b => {
+        const svc = SERVICES[b.category];
+        const icon = svc ? svc.icon : '🔧';
+        const statusLabel = { upcoming: '🔵 Upcoming', completed: '✓ Completed', cancelled: '✕ Cancelled' }[b.status] || b.status;
+        const dateFormatted = b.date ? new Date(b.date + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—';
+
+        return `
+          <div class="order-card" onclick="openOrderDetail('${b.id}')">
+            <div class="order-icon">${icon}</div>
+            <div class="order-info">
+              <div class="order-name">${b.serviceName}</div>
+              <div class="order-meta">
+                <span>📅 ${dateFormatted}</span>
+                <span>⏰ ${b.time || '—'}</span>
+                <span>🏷️ ${b.category.charAt(0).toUpperCase() + b.category.slice(1)}</span>
+              </div>
+            </div>
+            <div class="order-right">
+              <div class="order-price">$${b.price}</div>
+              <span class="status-badge ${b.status}">${statusLabel}</span>
+            </div>
+          </div>`;
+      }).join('');
+    }
+
+    // ── Filter ──
+    function filterOrders(status, btn) {
+      document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+      const filtered = status === 'all' ? allBookings : allBookings.filter(b => b.status === status);
+      renderOrders(filtered);
+    }
+
+    // ── Order Detail Panel ──
+    function openOrderDetail(bookingId) {
+      const booking = allBookings.find(b => b.id === bookingId);
+      if (!booking) return;
+
+      const svc = SERVICES[booking.category];
+      const icon = svc ? svc.icon : '🔧';
+      const dateFormatted = booking.date
+        ? new Date(booking.date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })
+        : '—';
+
+      // Segment: Order Detail Viewed
+      Segment.track('Order Detail Viewed', {
+        bookingId: booking.id,
+        serviceName: booking.serviceName,
+        category: booking.category,
+        status: booking.status,
+        price: booking.price,
+      });
+
+      const addr = booking.address;
+      const addressStr = addr ? `${addr.street}, ${addr.city}` : 'Not recorded';
+
+      document.getElementById('detailPanelInner').innerHTML = `
+        <div class="detail-panel-header">
+          <div>
+            <div style="font-size:0.72rem;color:var(--gray-mid);margin-bottom:2px">Booking #${booking.id.slice(-6).toUpperCase()}</div>
+            <div style="font-family:var(--font-display);font-weight:700;font-size:1rem;color:var(--navy)">${booking.serviceName}</div>
+          </div>
+          <button class="detail-panel-close" onclick="closePanel()">✕</button>
+        </div>
+
+        <div class="detail-panel-body">
+          <div class="order-detail-hero">
+            <div class="order-detail-emoji">${icon}</div>
+            <div class="order-detail-name">${booking.serviceName}</div>
+            <span class="status-badge ${booking.status}" style="margin-top:4px">
+              ${{ upcoming: '🔵 Upcoming', completed: '✓ Completed', cancelled: '✕ Cancelled' }[booking.status]}
+            </span>
+          </div>
+
+          <div class="detail-rows">
+            <div class="detail-row"><span class="label">Category</span><span class="value">${booking.category.charAt(0).toUpperCase() + booking.category.slice(1)}</span></div>
+            <div class="detail-row"><span class="label">Date</span><span class="value">${dateFormatted}</span></div>
+            <div class="detail-row"><span class="label">Time</span><span class="value">${booking.time || '—'}</span></div>
+            <div class="detail-row"><span class="label">Address</span><span class="value">${addressStr}</span></div>
+            <div class="detail-row"><span class="label">Amount</span><span class="value" style="color:var(--orange);font-size:1rem">$${booking.price}</span></div>
+            <div class="detail-row"><span class="label">Payment</span><span class="value">On completion</span></div>
+          </div>
+
+          ${booking.status === 'completed' ? `
+          <div class="rebook-section">
+            <div class="rebook-text">
+              <strong>Book again?</strong>
+              Happy with this service? Rebook with one click.
+            </div>
+            <a href="booking.html?cat=${booking.category}&item=${booking.serviceId}"
+               class="btn btn-primary btn-sm"
+               onclick="fireRebookEvent('${booking.category}', '${booking.serviceName}', '${booking.serviceId}')">
+              Rebook
+            </a>
+          </div>` : ''}
+
+          ${booking.status === 'upcoming' ? `
+          <div style="background:#EFF6FF;border-radius:var(--radius-md);padding:14px 16px;font-size:0.82rem;color:#1D4ED8;line-height:1.6;margin-top:16px">
+            📞 A professional will be assigned 2 hours before your slot. You'll be notified via your registered contact.
+          </div>` : ''}
+        </div>
+      `;
+
+      document.getElementById('detailPanel').classList.add('open');
+    }
+
+    function fireRebookEvent(category, serviceName, serviceId) {
+      const svc = SERVICES[category];
+      Segment.track(`${svc.name} Booking Started`, {
+        category, serviceName, serviceId,
+        source: 'rebook_from_orders',
+      });
+    }
+
+    function closePanel() {
+      document.getElementById('detailPanel').classList.remove('open');
+    }
+
+    document.getElementById('detailPanel').addEventListener('click', function(e) {
+      if (e.target === this) closePanel();
+    });
+
+    // ── Init ──
+    renderStats(allBookings);
+    renderOrders(allBookings);
+  </script>
+
+</body>
+</html>

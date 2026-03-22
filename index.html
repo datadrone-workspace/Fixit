@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FixIt — Home Services at Your Doorstep</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Twilio Segment snippet (replace YOUR_WRITE_KEY) -->
+  <script>
+    !function(){var i="analytics",analytics=window[i]=window[i]||[];if(!analytics.initialize)if(analytics.invoked)window.console&&console.error&&console.error("Segment snippet included twice.");else{analytics.invoked=!0;analytics.methods=["trackSubmit","trackClick","trackLink","trackForm","pageview","identify","reset","group","track","ready","alias","debug","page","screen","once","off","on","addSourceMiddleware","addIntegrationMiddleware","setAnonymousId","addDestinationMiddleware","register"];analytics.factory=function(e){return function(){if(window[i].initialized)return window[i][e].apply(window[i],arguments);var n=Array.prototype.slice.call(arguments);if(["track","screen","alias","group","page","identify"].indexOf(e)>-1){var c=document.querySelector("link[rel='canonical']");n.push({__t:"bpc",c:c&&c.getAttribute("href")||void 0,p:location.pathname,u:location.href,s:location.search,t:document.title,r:document.referrer})}n.unshift(e);analytics.push(n);return analytics}};for(var n=0;n<analytics.methods.length;n++){var key=analytics.methods[n];analytics[key]=analytics.factory(key)}analytics.load=function(key,n){var t=document.createElement("script");t.type="text/javascript";t.async=!0;t.setAttribute("data-global-segment-analytics-key",i);t.src="https://cdn.segment.com/analytics.js/v1/"+key+"/analytics.min.js";var r=document.getElementsByTagName("script")[0];r.parentNode.insertBefore(t,r);analytics._loadOptions=n};analytics._writeKey="YOUR_WRITE_KEY";analytics._cdn="https://cdn.segment.com";analytics.SNIPPET_VERSION="5.2.1";
+    analytics.load("YOUR_WRITE_KEY");
+    }}();
+  </script>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <div id="navbarRoot"></div>
+
+  <!-- AUTH MODAL -->
+  <div id="authModalRoot"></div>
+
+  <main class="page-content">
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-content">
+        <div class="hero-eyebrow fade-up">Trusted by 50,000+ homeowners</div>
+        <h1 class="hero-title fade-up delay-1">
+          Home repairs,<br><span class="accent">done right.</span><br>Every time.
+        </h1>
+        <p class="hero-subtitle fade-up delay-2">
+          Professional plumbers, electricians, cleaners & carpenters — booked in minutes, at your doorstep.
+        </p>
+        <div class="hero-actions fade-up delay-3">
+          <a href="services.html" class="btn btn-primary btn-lg">Book a Service</a>
+          <a href="services.html" class="btn btn-outline btn-lg">Browse Services</a>
+        </div>
+        <div class="hero-stats fade-up delay-4">
+          <div class="stat-item">
+            <div class="stat-num">50K+</div>
+            <div class="stat-label">Happy Customers</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-num">4.8★</div>
+            <div class="stat-label">Avg. Rating</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-num">2hr</div>
+            <div class="stat-label">Avg. Response</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-visual fade-up delay-2">
+        <div class="hero-card-stack">
+          <div class="hero-main-card">
+            <div class="hero-card-img">🔧</div>
+            <div class="hero-card-badge">⚡ Available Now</div>
+            <div class="hero-card-title">Pipe Leak Repair</div>
+            <div class="hero-card-meta">Professional · Insured · Guaranteed</div>
+          </div>
+          <div class="hero-float-card card-booking">
+            <div class="float-icon">📅</div>
+            <div>
+              <div class="float-label">Just booked</div>
+              <div class="float-sub">Priya · Electrical · 2 min ago</div>
+            </div>
+          </div>
+          <div class="hero-float-card card-rating">
+            <div class="float-icon">⭐</div>
+            <div>
+              <div class="float-label">4.9 / 5.0</div>
+              <div class="float-sub">Based on 3,240 reviews</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TRUST BANNER -->
+    <div class="trust-banner">
+      <div class="trust-item"><span class="trust-icon">🛡️</span> <span><strong>Background Verified</strong> professionals</span></div>
+      <div class="trust-item"><span class="trust-icon">💯</span> <span><strong>Satisfaction</strong> guaranteed or re-do</span></div>
+      <div class="trust-item"><span class="trust-icon">📍</span> <span><strong>On-time</strong> arrival, every time</span></div>
+      <div class="trust-item"><span class="trust-icon">🔒</span> <span><strong>Insured</strong> for all work done</span></div>
+    </div>
+
+    <!-- SERVICES SECTION -->
+    <section class="section">
+      <div class="section-header-row">
+        <div>
+          <div class="section-label">Our Services</div>
+          <h2 class="section-title">What can we fix for you?</h2>
+          <p class="section-subtitle">From a leaking tap to a full home deep clean — we've got skilled professionals for every job.</p>
+        </div>
+        <a href="services.html" class="btn btn-outline">View All →</a>
+      </div>
+
+      <div class="services-grid" id="servicesGrid"></div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="section section-alt">
+      <div class="section-header">
+        <div class="section-label">How It Works</div>
+        <h2 class="section-title">3 steps to a fixed home</h2>
+      </div>
+      <div class="steps-grid">
+        <div class="step-connector"></div>
+        <div class="step-connector second"></div>
+
+        <div class="step-card">
+          <div class="step-num">01</div>
+          <div class="step-title">Pick a Service</div>
+          <p class="step-desc">Browse plumbing, electrical, cleaning or carpentry. Choose the exact job you need done.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-num">02</div>
+          <div class="step-title">Book a Slot</div>
+          <p class="step-desc">Select your preferred date and time. We'll confirm availability within minutes.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-num">03</div>
+          <div class="step-title">Relax at Home</div>
+          <p class="step-desc">A verified professional arrives on time. Watch the job get done — guaranteed.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- TESTIMONIALS -->
+    <section class="section">
+      <div class="section-header">
+        <div class="section-label">What Customers Say</div>
+        <h2 class="section-title">Real homes. Real stories.</h2>
+      </div>
+      <div class="testimonials-grid">
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text">"The plumber arrived exactly on time, fixed our kitchen sink leak in under an hour. Absolutely professional. Will book again."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">PS</div>
+            <div>
+              <div class="author-name">Priya Sharma</div>
+              <div class="author-city">Chennai · Plumbing</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text">"Booked a full home cleaning and was blown away. Every corner spotless. The team was polite and efficient throughout."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">AM</div>
+            <div>
+              <div class="author-name">Arjun Mehta</div>
+              <div class="author-city">Bengaluru · Cleaning</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★☆</div>
+          <p class="testimonial-text">"Had a complex wiring issue. The electrician diagnosed it fast and fixed it safely. Very fair pricing too. Highly recommend."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">SR</div>
+            <div>
+              <div class="author-name">Sneha Rao</div>
+              <div class="author-city">Hyderabad · Electrical</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <div class="cta-section">
+      <div>
+        <h2 class="cta-title">Your home deserves the best.</h2>
+        <p class="cta-sub">Book a service today — professionals available 7 days a week.</p>
+      </div>
+      <a href="services.html" class="btn btn-primary btn-lg">Get Started →</a>
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="index.html" class="nav-logo">Fix<span>It</span></a>
+        <p>Professional home services at your doorstep. Trusted by 50,000+ homeowners across India.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Services</h4>
+        <ul>
+          <li><a href="services.html?cat=plumbing">Plumbing</a></li>
+          <li><a href="services.html?cat=electrical">Electrical</a></li>
+          <li><a href="services.html?cat=cleaning">Cleaning</a></li>
+          <li><a href="services.html?cat=carpentry">Carpentry</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">How It Works</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Blog</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Contact Us</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="dashboard.html">Dashboard</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 FixIt Home Services. All rights reserved.</span>
+      <span>Made with ❤️ for homeowners</span>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+  <script>
+    // Render navbar + modal
+    document.getElementById('navbarRoot').innerHTML = renderNavbar('Home');
+    document.getElementById('authModalRoot').innerHTML = renderAuthModal();
+
+    // Segment: Home Page Viewed
+    Segment.page('Home Page', { referrer: document.referrer || 'direct' });
+
+    // Render service cards
+    const grid = document.getElementById('servicesGrid');
+    Object.values(SERVICES).forEach((svc, i) => {
+      const card = document.createElement('a');
+      card.href = `services.html?cat=${svc.id}`;
+      card.className = `service-card fade-up delay-${i + 1}`;
+      card.innerHTML = `
+        <div class="service-icon">${svc.icon}</div>
+        <div class="service-name">${svc.name}</div>
+        <p class="service-desc">${svc.desc}</p>
+        <div class="service-meta">
+          <span class="service-price">From ₹${Math.min(...svc.items.map(i => i.price))}</span>
+          <span class="service-rating">★ ${svc.rating} (${svc.reviewCount.toLocaleString()})</span>
+        </div>
+      `;
+      card.addEventListener('click', () => {
+        Segment.track(`${svc.name} Service Viewed`, {
+          category: svc.id,
+          source: 'home_page',
+        });
+      });
+      grid.appendChild(card);
+    });
+  </script>
+
+</body>
+</html>

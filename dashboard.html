@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CDP Dashboard — FixIt Admin</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* ── ADMIN LOGIN ── */
+    .admin-login-screen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--navy);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .admin-login-screen::before {
+      content: '';
+      position: absolute;
+      top: -200px; left: -200px;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(255,107,53,0.12) 0%, transparent 70%);
+    }
+
+    .admin-login-screen::after {
+      content: '';
+      position: absolute;
+      bottom: -200px; right: -200px;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(255,107,53,0.08) 0%, transparent 70%);
+    }
+
+    .login-card {
+      background: var(--white);
+      border-radius: var(--radius-xl);
+      padding: 48px 44px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.3);
+      position: relative;
+      z-index: 1;
+      animation: fadeUp 0.5s forwards;
+    }
+
+    .login-logo {
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .login-logo .logo-text {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--navy);
+    }
+
+    .login-logo .logo-text span { color: var(--orange); }
+
+    .login-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--orange-pale);
+      color: var(--orange);
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 100px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 32px;
+    }
+
+    .login-title {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 6px;
+    }
+
+    .login-sub {
+      font-size: 0.83rem;
+      color: var(--gray-mid);
+      margin-bottom: 28px;
+    }
+
+    .login-hint {
+      background: var(--gray-light);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      font-size: 0.78rem;
+      color: var(--gray-mid);
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+
+    .login-hint strong { color: var(--navy); }
+
+    /* ── DASHBOARD LAYOUT ── */
+    .dashboard-wrap { display: none; min-height: 100vh; background: var(--gray-light); }
+
+    .dash-navbar {
+      background: var(--navy);
+      padding: 0 40px;
+      height: 62px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .dash-nav-left { display: flex; align-items: center; gap: 16px; }
+
+    .dash-logo {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--white);
+    }
+
+    .dash-logo span { color: var(--orange); }
+
+    .dash-nav-badge {
+      background: rgba(255,107,53,0.2);
+      color: var(--orange);
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 100px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .dash-nav-right { display: flex; align-items: center; gap: 16px; }
+
+    .dash-admin-name {
+      font-size: 0.82rem;
+      color: rgba(255,255,255,0.6);
+    }
+
+    .dash-logout {
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.5);
+      background: none;
+      border: 1px solid rgba(255,255,255,0.15);
+      padding: 5px 14px;
+      border-radius: 100px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .dash-logout:hover { color: var(--white); border-color: rgba(255,255,255,0.4); }
+
+    .dash-content { padding: 36px 40px 60px; }
+
+    /* ── OVERVIEW STATS ── */
+    .overview-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--orange);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .overview-title {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--navy);
+      margin-bottom: 24px;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 36px;
+    }
+
+    .kpi-card {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      padding: 22px 24px;
+      border: 1.5px solid var(--gray-border);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .kpi-card::before {
+      content: '';
+      position: absolute;
+      bottom: 0; right: 0;
+      width: 80px; height: 80px;
+      background: var(--orange-pale);
+      border-radius: 50%;
+      transform: translate(30px, 30px);
+    }
+
+    .kpi-icon {
+      font-size: 1.3rem;
+      margin-bottom: 12px;
+    }
+
+    .kpi-num {
+      font-family: var(--font-display);
+      font-size: 1.9rem;
+      font-weight: 800;
+      color: var(--navy);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .kpi-label {
+      font-size: 0.78rem;
+      color: var(--gray-mid);
+      margin-bottom: 10px;
+    }
+
+    .kpi-trend {
+      font-size: 0.72rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .kpi-trend.up { color: var(--success); }
+    .kpi-trend.down { color: #EF4444; }
+
+    /* ── UC SECTIONS ── */
+    .uc-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .uc-card {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      border: 1.5px solid var(--gray-border);
+      overflow: hidden;
+    }
+
+    .uc-card.full-width { grid-column: 1 / -1; }
+
+    .uc-header {
+      padding: 20px 24px 16px;
+      border-bottom: 1px solid var(--gray-border);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .uc-header-left {}
+
+    .uc-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--orange-pale);
+      color: var(--orange);
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 100px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+
+    .uc-title {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 3px;
+    }
+
+    .uc-desc {
+      font-size: 0.75rem;
+      color: var(--gray-mid);
+      line-height: 1.5;
+    }
+
+    .uc-count {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--orange);
+      flex-shrink: 0;
+    }
+
+    .uc-count-label { font-size: 0.65rem; color: var(--gray-mid); text-align: right; }
+
+    .uc-body { padding: 20px 24px; }
+
+    /* ── UC1: SERVICE TAGS TABLE ── */
+    .customer-table { width: 100%; border-collapse: collapse; }
+
+    .customer-table th {
+      text-align: left;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--gray-mid);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 0 12px 12px 0;
+      border-bottom: 1.5px solid var(--gray-border);
+    }
+
+    .customer-table td {
+      padding: 13px 12px 13px 0;
+      border-bottom: 1px solid var(--gray-border);
+      font-size: 0.83rem;
+      vertical-align: middle;
+    }
+
+    .customer-table tr:last-child td { border-bottom: none; }
+
+    .customer-avatar {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: var(--orange-pale);
+      color: var(--orange);
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 700;
+      margin-right: 10px;
+      vertical-align: middle;
+    }
+
+    .customer-name-cell { color: var(--navy); font-weight: 500; }
+
+    .loyalist-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 100px;
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+
+    .tag-plumbing { background: #EFF6FF; color: #2563EB; }
+    .tag-electrical { background: #FFFBEB; color: #D97706; }
+    .tag-cleaning { background: #F0FDF4; color: #16A34A; }
+    .tag-carpentry { background: #F5F3FF; color: #7C3AED; }
+    .tag-multi { background: var(--orange-pale); color: var(--orange); }
+    .tag-new { background: var(--gray-light); color: var(--gray-mid); }
+
+    /* ── UC2: ABANDONMENT ── */
+    .abandon-summary {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .abandon-stat {
+      background: var(--gray-light);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      text-align: center;
+    }
+
+    .abandon-stat-num {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--navy);
+      margin-bottom: 3px;
+    }
+
+    .abandon-stat-label { font-size: 0.72rem; color: var(--gray-mid); }
+
+    .abandon-bar-list { display: flex; flex-direction: column; gap: 12px; }
+
+    .abandon-bar-item {}
+
+    .abandon-bar-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .abandon-bar-label { font-size: 0.8rem; font-weight: 500; color: var(--navy); display: flex; align-items: center; gap: 7px; }
+    .abandon-bar-pct { font-size: 0.78rem; font-weight: 700; color: var(--gray-mid); }
+
+    .abandon-bar-track {
+      height: 8px;
+      background: var(--gray-light);
+      border-radius: 100px;
+      overflow: hidden;
+    }
+
+    .abandon-bar-fill {
+      height: 100%;
+      border-radius: 100px;
+      background: var(--orange);
+      transition: width 0.8s ease;
+    }
+
+    .abandon-bar-fill.low { background: #22C55E; }
+    .abandon-bar-fill.mid { background: #F59E0B; }
+    .abandon-bar-fill.high { background: #EF4444; }
+
+    /* ── UC3: HIGH VALUE ── */
+    .hv-list { display: flex; flex-direction: column; gap: 12px; }
+
+    .hv-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 16px;
+      background: var(--gray-light);
+      border-radius: var(--radius-md);
+    }
+
+    .hv-rank {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--orange);
+      width: 24px;
+      flex-shrink: 0;
+    }
+
+    .hv-avatar {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      background: var(--orange);
+      color: white;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .hv-info { flex: 1; }
+    .hv-name { font-weight: 600; font-size: 0.88rem; color: var(--navy); margin-bottom: 3px; }
+    .hv-meta { font-size: 0.75rem; color: var(--gray-mid); }
+
+    .hv-right { text-align: right; }
+    .hv-bookings { font-family: var(--font-display); font-size: 1.1rem; font-weight: 800; color: var(--navy); }
+    .hv-bookings-label { font-size: 0.68rem; color: var(--gray-mid); }
+
+    .hv-crown { font-size: 1rem; }
+
+    /* ── UC5: CROSS SERVICE ── */
+    .cross-table-wrap { overflow-x: auto; }
+
+    .cross-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 380px;
+    }
+
+    .cross-table th {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--gray-mid);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      padding: 8px 12px;
+      text-align: center;
+      border-bottom: 1.5px solid var(--gray-border);
+    }
+
+    .cross-table th:first-child { text-align: left; }
+
+    .cross-table td {
+      padding: 12px;
+      text-align: center;
+      border-bottom: 1px solid var(--gray-border);
+      font-size: 0.82rem;
+      font-weight: 500;
+    }
+
+    .cross-table td:first-child {
+      text-align: left;
+      font-weight: 600;
+      color: var(--navy);
+      white-space: nowrap;
+    }
+
+    .cross-table tr:last-child td { border-bottom: none; }
+
+    .cross-cell {
+      width: 44px; height: 32px;
+      border-radius: var(--radius-sm);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    .cross-cell.none { background: var(--gray-light); color: var(--gray-border); }
+    .cross-cell.low { background: #FEF9C3; color: #A16207; }
+    .cross-cell.mid { background: #FED7AA; color: #C2410C; }
+    .cross-cell.high { background: #FDBA74; color: #9A3412; }
+    .cross-cell.self { background: var(--gray-light); color: var(--gray-mid); font-size: 0.7rem; }
+
+    .cross-legend {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+
+    .cross-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.72rem;
+      color: var(--gray-mid);
+    }
+
+    .cross-legend-dot {
+      width: 12px; height: 12px;
+      border-radius: 3px;
+    }
+
+    /* ── INSIGHT CALLOUTS ── */
+    .insight-box {
+      background: var(--navy);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .insight-box .insight-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+
+    .insight-box p {
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.75);
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    .insight-box p strong { color: var(--white); }
+
+    /* ── SEGMENT EVENTS LOG ── */
+    .events-log {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      border: 1.5px solid var(--gray-border);
+      margin-top: 24px;
+      overflow: hidden;
+    }
+
+    .events-log-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--gray-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .events-log-title {
+      font-family: var(--font-display);
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--navy);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .live-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.3); }
+    }
+
+    .events-log-body { padding: 8px 0; max-height: 280px; overflow-y: auto; }
+
+    .event-row {
+      display: grid;
+      grid-template-columns: 130px 1fr 90px;
+      gap: 12px;
+      align-items: center;
+      padding: 10px 24px;
+      border-bottom: 1px solid var(--gray-border);
+      transition: background 0.15s;
+    }
+
+    .event-row:last-child { border-bottom: none; }
+    .event-row:hover { background: var(--gray-light); }
+
+    .event-time { font-size: 0.72rem; color: var(--gray-mid); font-family: monospace; }
+
+    .event-name {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--navy);
+    }
+
+    .event-user { font-size: 0.72rem; color: var(--gray-mid); text-align: right; }
+
+    @media (max-width: 1024px) {
+      .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+      .uc-grid { grid-template-columns: 1fr; }
+      .uc-card.full-width { grid-column: auto; }
+      .dash-content { padding: 24px 20px 48px; }
+    }
+
+    @media (max-width: 768px) {
+      .kpi-grid { grid-template-columns: 1fr 1fr; }
+      .abandon-summary { grid-template-columns: 1fr; }
+      .dash-navbar { padding: 0 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ADMIN LOGIN -->
+  <div class="admin-login-screen" id="loginScreen">
+    <div class="login-card">
+      <div class="login-logo">
+        <div class="logo-text">Fix<span>It</span></div>
+      </div>
+      <div style="text-align:center;margin-bottom:28px">
+        <span class="login-badge">🔒 Admin Access</span>
+      </div>
+
+      <div class="login-title">CDP Dashboard</div>
+      <p class="login-sub">Sign in to view customer insights and analytics.</p>
+
+      <div class="login-hint">
+        🧪 <strong>Demo credentials</strong><br>
+        Email: <strong>admin@fixit.com</strong><br>
+        Password: <strong>admin123</strong>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input class="form-input" id="adminEmail" type="email" placeholder="admin@fixit.com" value="admin@fixit.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input class="form-input" id="adminPassword" type="password" placeholder="••••••••" value="admin123">
+      </div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:8px" onclick="adminLogin()">
+        Sign In to Dashboard →
+      </button>
+
+      <div style="text-align:center;margin-top:20px">
+        <a href="index.html" style="font-size:0.78rem;color:var(--gray-mid);text-decoration:none">← Back to FixIt</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div class="dashboard-wrap" id="dashboardWrap">
+
+    <!-- Navbar -->
+    <div class="dash-navbar">
+      <div class="dash-nav-left">
+        <div class="dash-logo">Fix<span>It</span></div>
+        <span class="dash-nav-badge">CDP Dashboard</span>
+      </div>
+      <div class="dash-nav-right">
+        <span class="dash-admin-name" id="dashAdminName"></span>
+        <button class="dash-logout" onclick="adminLogout()">Log Out</button>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="dash-content">
+
+      <!-- Overview -->
+      <div class="overview-label">Customer Data Platform</div>
+      <div class="overview-title">Business Overview</div>
+
+      <div class="kpi-grid" id="kpiGrid"></div>
+
+      <!-- UC Cards -->
+      <div class="uc-grid" id="ucGrid"></div>
+
+      <!-- Segment Events Log -->
+      <div class="events-log">
+        <div class="events-log-header">
+          <div class="events-log-title">
+            <div class="live-dot"></div>
+            Segment Event Stream
+          </div>
+          <span style="font-size:0.75rem;color:var(--gray-mid)" id="eventCount"></span>
+        </div>
+        <div class="events-log-body" id="eventsLogBody"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    // ── ADMIN AUTH ──
+    const ADMIN = { email: 'admin@fixit.com', password: 'admin123', name: 'Admin' };
+
+    function adminLogin() {
+      const email = document.getElementById('adminEmail').value.trim();
+      const password = document.getElementById('adminPassword').value;
+      if (email === ADMIN.email && password === ADMIN.password) {
+        sessionStorage.setItem('fixit_admin', 'true');
+        showDashboard();
+      } else {
+        const input = document.getElementById('adminEmail');
+        input.style.borderColor = '#EF4444';
+        setTimeout(() => input.style.borderColor = '', 1500);
+        Toast.show('Invalid credentials', 'error');
+      }
+    }
+
+    function adminLogout() {
+      sessionStorage.removeItem('fixit_admin');
+      document.getElementById('loginScreen').style.display = 'flex';
+      document.getElementById('dashboardWrap').style.display = 'none';
+    }
+
+    function showDashboard() {
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('dashboardWrap').style.display = 'block';
+      document.getElementById('dashAdminName').textContent = ADMIN.name;
+
+      Segment.track('Dashboard Page Viewed', { ownerId: 'admin' });
+      buildDashboard();
+    }
+
+    // Auto-login if session exists
+    if (sessionStorage.getItem('fixit_admin')) showDashboard();
+
+    // Allow Enter key on login
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && document.getElementById('loginScreen').style.display !== 'none') adminLogin();
+    });
+
+    // ── DATA ENGINE ──
+    function buildDashboard() {
+      const users    = Store.get('users') || [];
+      const bookings = Store.get('bookings') || [];
+      const events   = JSON.parse(localStorage.getItem('fixit_events') || '[]');
+
+      const confirmedBookings = bookings.filter(b => b.status === 'completed' || b.status === 'upcoming');
+      const totalRevenue = bookings.filter(b => b.status === 'completed').reduce((s, b) => s + b.price, 0);
+
+      // ── KPIs ──
+      document.getElementById('kpiGrid').innerHTML = `
+        <div class="kpi-card">
+          <div class="kpi-icon">👥</div>
+          <div class="kpi-num">${users.length}</div>
+          <div class="kpi-label">Total Customers</div>
+          <span class="kpi-trend up">↑ Growing</span>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon">📋</div>
+          <div class="kpi-num">${confirmedBookings.length}</div>
+          <div class="kpi-label">Total Bookings</div>
+          <span class="kpi-trend up">↑ Active</span>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon">💰</div>
+          <div class="kpi-num">$${totalRevenue.toLocaleString()}</div>
+          <div class="kpi-label">Revenue Earned</div>
+          <span class="kpi-trend up">↑ From completed</span>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon">📡</div>
+          <div class="kpi-num">${events.length}</div>
+          <div class="kpi-label">Events Tracked</div>
+          <span class="kpi-trend up">↑ Via Segment</span>
+        </div>
+      `;
+
+      buildUC1(users, bookings, events);
+      buildUC2(bookings, events);
+      buildUC3(users, bookings);
+      buildUC5(events);
+      buildEventsLog(events, users);
+    }
+
+    // ── UC1: SERVICE LOYALTY TAGS ──
+    function buildUC1(users, bookings, events) {
+      function getTag(userId) {
+        const userBookings = bookings.filter(b => b.userId === userId && b.status === 'completed');
+        if (userBookings.length === 0) return { label: 'New Customer', cls: 'tag-new', icon: '🆕' };
+
+        const catCounts = {};
+        userBookings.forEach(b => { catCounts[b.category] = (catCounts[b.category] || 0) + 1; });
+
+        const cats = Object.keys(catCounts);
+        if (cats.length >= 3) return { label: 'Multi-Service', cls: 'tag-multi', icon: '⭐' };
+
+        const topCat = cats.sort((a, b) => catCounts[b] - catCounts[a])[0];
+        const count = catCounts[topCat];
+
+        if (count >= 2) {
+          const map = {
+            plumbing:   { label: 'Plumbing Loyalist',   cls: 'tag-plumbing',   icon: '🔧' },
+            electrical: { label: 'Electrical Loyalist', cls: 'tag-electrical', icon: '⚡' },
+            cleaning:   { label: 'Cleaning Loyalist',   cls: 'tag-cleaning',   icon: '🧹' },
+            carpentry:  { label: 'Carpentry Loyalist',  cls: 'tag-carpentry',  icon: '🪚' },
+          };
+          return map[topCat] || { label: topCat, cls: 'tag-new', icon: '🏷️' };
+        }
+
+        return { label: 'Exploring', cls: 'tag-new', icon: '🔍' };
+      }
+
+      const rows = users.map(u => {
+        const tag = getTag(u.id);
+        const userBookings = bookings.filter(b => b.userId === u.id);
+        const initials = u.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+        return { user: u, tag, bookingCount: userBookings.length, initials };
+      }).sort((a, b) => b.bookingCount - a.bookingCount);
+
+      const loyalists = rows.filter(r => !['New Customer', 'Exploring'].includes(r.tag.label)).length;
+
+      const html = `
+        <div class="uc-card">
+          <div class="uc-header">
+            <div class="uc-header-left">
+              <div class="uc-badge">UC1 · Rebooking Affinity</div>
+              <div class="uc-title">Service Loyalty Tags</div>
+              <div class="uc-desc">Customers tagged based on their most-booked service category</div>
+            </div>
+            <div style="text-align:right">
+              <div class="uc-count">${loyalists}</div>
+              <div class="uc-count-label">Loyalists identified</div>
+            </div>
+          </div>
+          <div class="uc-body">
+            <table class="customer-table">
+              <thead>
+                <tr>
+                  <th>Customer</th>
+                  <th>Loyalty Tag</th>
+                  <th>Bookings</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${rows.map(r => `
+                  <tr>
+                    <td class="customer-name-cell">
+                      <span class="customer-avatar">${r.initials}</span>
+                      ${r.user.name}
+                    </td>
+                    <td>
+                      <span class="loyalist-tag ${r.tag.cls}">
+                        ${r.tag.icon} ${r.tag.label}
+                      </span>
+                    </td>
+                    <td style="font-weight:700;color:var(--navy)">${r.bookingCount}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+            <div class="insight-box">
+              <span class="insight-icon">💡</span>
+              <p><strong>Insight:</strong> ${loyalists} out of ${users.length} customers have a clear service preference. These loyalists are your most predictable revenue source.</p>
+            </div>
+          </div>
+        </div>`;
+
+      document.getElementById('ucGrid').insertAdjacentHTML('beforeend', html);
+    }
+
+    // ── UC2: BOOKING ABANDONMENT ──
+    function buildUC2(bookings, events) {
+      const started   = events.filter(e => e.event.includes('Booking Started'));
+      const confirmed = events.filter(e => e.event.includes('Booking Confirmed'));
+      const abandoned = events.filter(e => e.event.includes('Booking Abandoned'));
+
+      const totalStarted = started.length;
+      const totalConfirmed = confirmed.length;
+      const abandonRate = totalStarted > 0 ? Math.round(((totalStarted - totalConfirmed) / totalStarted) * 100) : 0;
+
+      // Abandonment by category
+      const cats = ['plumbing', 'electrical', 'cleaning', 'carpentry'];
+      const catData = cats.map(cat => {
+        const catStarted   = started.filter(e => e.props?.category === cat).length;
+        const catConfirmed = confirmed.filter(e => e.props?.category === cat).length;
+        const catAbandoned = Math.max(0, catStarted - catConfirmed);
+        const rate = catStarted > 0 ? Math.round((catAbandoned / catStarted) * 100) : 0;
+        const svc = SERVICES[cat];
+        return { cat, name: svc.name, icon: svc.icon, started: catStarted, confirmed: catConfirmed, rate };
+      }).filter(d => d.started > 0).sort((a, b) => b.rate - a.rate);
+
+      // Last step reached breakdown
+      const stepCounts = {};
+      abandoned.forEach(e => {
+        const step = e.props?.lastStepReached || 'unknown';
+        stepCounts[step] = (stepCounts[step] || 0) + 1;
+      });
+
+      const html = `
+        <div class="uc-card">
+          <div class="uc-header">
+            <div class="uc-header-left">
+              <div class="uc-badge">UC2 · Drop-off Analysis</div>
+              <div class="uc-title">Booking Abandonment</div>
+              <div class="uc-desc">Users who started but didn't complete their booking</div>
+            </div>
+            <div style="text-align:right">
+              <div class="uc-count">${abandonRate}%</div>
+              <div class="uc-count-label">Abandonment rate</div>
+            </div>
+          </div>
+          <div class="uc-body">
+            <div class="abandon-summary">
+              <div class="abandon-stat">
+                <div class="abandon-stat-num">${totalStarted}</div>
+                <div class="abandon-stat-label">Booking Started</div>
+              </div>
+              <div class="abandon-stat">
+                <div class="abandon-stat-num">${totalConfirmed}</div>
+                <div class="abandon-stat-label">Booking Confirmed</div>
+              </div>
+            </div>
+
+            <div style="font-size:0.78rem;font-weight:700;color:var(--gray-mid);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px">
+              Abandonment by Service
+            </div>
+            <div class="abandon-bar-list">
+              ${catData.length > 0 ? catData.map(d => {
+                const cls = d.rate >= 60 ? 'high' : d.rate >= 30 ? 'mid' : 'low';
+                return `
+                  <div class="abandon-bar-item">
+                    <div class="abandon-bar-top">
+                      <span class="abandon-bar-label">${d.icon} ${d.name}</span>
+                      <span class="abandon-bar-pct">${d.rate}% abandoned</span>
+                    </div>
+                    <div class="abandon-bar-track">
+                      <div class="abandon-bar-fill ${cls}" style="width:${d.rate}%"></div>
+                    </div>
+                  </div>`;
+              }).join('') : '<p style="font-size:0.82rem;color:var(--gray-mid)">No abandonment data yet. Book and abandon a service to see data here.</p>'}
+            </div>
+
+            ${Object.keys(stepCounts).length > 0 ? `
+            <div style="margin-top:16px;font-size:0.78rem;font-weight:700;color:var(--gray-mid);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">
+              Where they dropped off
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px">
+              ${Object.entries(stepCounts).map(([step, count]) => `
+                <span style="background:var(--gray-light);border-radius:100px;padding:5px 12px;font-size:0.75rem;color:var(--navy);font-weight:500">
+                  ${step.replace(/_/g, ' ')} · <strong>${count}</strong>
+                </span>`).join('')}
+            </div>` : ''}
+
+            <div class="insight-box">
+              <span class="insight-icon">💡</span>
+              <p><strong>Insight:</strong> ${abandonRate}% of users who started booking didn't complete it. ${catData[0] ? `${catData[0].name} has the highest drop-off — consider simplifying that booking flow.` : 'Keep tracking to find friction points.'}</p>
+            </div>
+          </div>
+        </div>`;
+
+      document.getElementById('ucGrid').insertAdjacentHTML('beforeend', html);
+    }
+
+    // ── UC3: HIGH VALUE CUSTOMERS ──
+    function buildUC3(users, bookings) {
+      const userStats = users.map(u => {
+        const userBookings = bookings.filter(b => b.userId === u.id);
+        const completed = userBookings.filter(b => b.status === 'completed');
+        const spent = completed.reduce((s, b) => s + b.price, 0);
+        const topCat = (() => {
+          const cc = {};
+          completed.forEach(b => cc[b.category] = (cc[b.category] || 0) + 1);
+          return Object.entries(cc).sort((a, b) => b[1] - a[1])[0]?.[0] || '—';
+        })();
+        return { user: u, total: userBookings.length, completed: completed.length, spent, topCat };
+      }).sort((a, b) => b.total - a.total);
+
+      const highValue = userStats.filter(u => u.total >= 3);
+
+      const html = `
+        <div class="uc-card">
+          <div class="uc-header">
+            <div class="uc-header-left">
+              <div class="uc-badge">UC3 · Loyalty Segment</div>
+              <div class="uc-title">High-Value Customers</div>
+              <div class="uc-desc">Customers with 3+ bookings — your most loyal segment</div>
+            </div>
+            <div style="text-align:right">
+              <div class="uc-count">${highValue.length}</div>
+              <div class="uc-count-label">High-value users</div>
+            </div>
+          </div>
+          <div class="uc-body">
+            <div class="hv-list">
+              ${userStats.map((u, i) => {
+                const initials = u.user.name.split(' ').map(n => n[0]).join('').slice(0,2).toUpperCase();
+                const isHighValue = u.total >= 3;
+                const svc = SERVICES[u.topCat];
+                return `
+                  <div class="hv-item" style="${isHighValue ? 'border:1.5px solid var(--orange);background:var(--orange-pale)' : ''}">
+                    <div class="hv-rank">#${i+1}</div>
+                    <div class="hv-avatar" style="${!isHighValue ? 'background:var(--gray-mid)' : ''}">${initials}</div>
+                    <div class="hv-info">
+                      <div class="hv-name">
+                        ${u.user.name}
+                        ${isHighValue ? '<span class="hv-crown">👑</span>' : ''}
+                      </div>
+                      <div class="hv-meta">
+                        Top service: ${svc ? svc.icon + ' ' + svc.name : '—'} · $${u.spent} spent
+                      </div>
+                    </div>
+                    <div class="hv-right">
+                      <div class="hv-bookings">${u.total}</div>
+                      <div class="hv-bookings-label">bookings</div>
+                    </div>
+                  </div>`;
+              }).join('')}
+            </div>
+            <div class="insight-box">
+              <span class="insight-icon">💡</span>
+              <p><strong>Insight:</strong> ${highValue.length} customer${highValue.length !== 1 ? 's' : ''} ${highValue.length !== 1 ? 'have' : 'has'} booked 3+ times. These are your VIP customers — they drive repeat revenue and are the most likely to refer others.</p>
+            </div>
+          </div>
+        </div>`;
+
+      document.getElementById('ucGrid').insertAdjacentHTML('beforeend', html);
+    }
+
+    // ── UC5: CROSS-SERVICE INTEREST ──
+    function buildUC5(events) {
+      const cats = ['plumbing', 'electrical', 'cleaning', 'carpentry'];
+      const catNames = { plumbing: 'Plumbing', electrical: 'Electrical', cleaning: 'Cleaning', carpentry: 'Carpentry' };
+      const catIcons = { plumbing: '🔧', electrical: '⚡', cleaning: '🧹', carpentry: '🪚' };
+
+      // Build per-user: what they booked vs what they viewed
+      const userEvents = {};
+      events.forEach(e => {
+        const uid = e.props?.userId;
+        if (!uid || uid === 'anonymous') return;
+        if (!userEvents[uid]) userEvents[uid] = { booked: new Set(), viewed: new Set() };
+        if (e.event.includes('Booking Confirmed')) userEvents[uid].booked.add(e.props.category);
+        if (e.event.includes('Service Viewed')) userEvents[uid].viewed.add(e.props.category);
+      });
+
+      // Cross matrix: booked A, also viewed B
+      const matrix = {};
+      cats.forEach(a => {
+        matrix[a] = {};
+        cats.forEach(b => { matrix[a][b] = 0; });
+      });
+
+      Object.values(userEvents).forEach(({ booked, viewed }) => {
+        booked.forEach(a => {
+          viewed.forEach(b => {
+            if (a !== b) matrix[a][b]++;
+          });
+        });
+      });
+
+      const maxVal = Math.max(...cats.flatMap(a => cats.filter(b => b !== a).map(b => matrix[a][b])), 1);
+
+      function getCellClass(val, isSelf) {
+        if (isSelf) return 'self';
+        if (val === 0) return 'none';
+        const pct = val / maxVal;
+        if (pct >= 0.7) return 'high';
+        if (pct >= 0.3) return 'mid';
+        return 'low';
+      }
+
+      const html = `
+        <div class="uc-card full-width">
+          <div class="uc-header">
+            <div class="uc-header-left">
+              <div class="uc-badge">UC5 · Cross-Service Interest</div>
+              <div class="uc-title">Who's Interested in What Else?</div>
+              <div class="uc-desc">Customers who booked one service and also viewed another — natural cross-interest signals</div>
+            </div>
+          </div>
+          <div class="uc-body">
+            <p style="font-size:0.78rem;color:var(--gray-mid);margin-bottom:18px">
+              Read as: <em>"Customers who booked [row] also viewed [column]"</em>
+            </p>
+            <div class="cross-table-wrap">
+              <table class="cross-table">
+                <thead>
+                  <tr>
+                    <th>Booked ↓ / Viewed →</th>
+                    ${cats.map(c => `<th>${catIcons[c]} ${catNames[c]}</th>`).join('')}
+                  </tr>
+                </thead>
+                <tbody>
+                  ${cats.map(a => `
+                    <tr>
+                      <td>${catIcons[a]} ${catNames[a]}</td>
+                      ${cats.map(b => {
+                        const val = matrix[a][b];
+                        const isSelf = a === b;
+                        const cls = getCellClass(val, isSelf);
+                        return `<td><span class="cross-cell ${cls}">${isSelf ? '—' : val > 0 ? val : '0'}</span></td>`;
+                      }).join('')}
+                    </tr>`).join('')}
+                </tbody>
+              </table>
+            </div>
+            <div class="cross-legend">
+              <span class="cross-legend-item"><span class="cross-legend-dot" style="background:#FED7AA"></span>Some interest</span>
+              <span class="cross-legend-item"><span class="cross-legend-dot" style="background:#FDBA74"></span>Strong interest</span>
+              <span class="cross-legend-item"><span class="cross-legend-dot" style="background:var(--gray-light)"></span>No overlap yet</span>
+            </div>
+            <div class="insight-box">
+              <span class="insight-icon">💡</span>
+              <p><strong>Insight:</strong> Cells with higher numbers reveal natural service pairings your customers already want. These are organic cross-service opportunities — no need to push, the data shows the demand.</p>
+            </div>
+          </div>
+        </div>`;
+
+      document.getElementById('ucGrid').insertAdjacentHTML('beforeend', html);
+    }
+
+    // ── EVENTS LOG ──
+    function buildEventsLog(events, users) {
+      const sorted = [...events].sort((a, b) => b.ts - a.ts).slice(0, 30);
+      document.getElementById('eventCount').textContent = `${events.length} total events`;
+
+      document.getElementById('eventsLogBody').innerHTML = sorted.map(e => {
+        const time = new Date(e.ts).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        const user = users.find(u => u.id === e.props?.userId);
+        const userName = user ? user.name.split(' ')[0] : (e.props?.userId || 'anon');
+        return `
+          <div class="event-row">
+            <span class="event-time">${time}</span>
+            <span class="event-name">${e.event}</span>
+            <span class="event-user">${userName}</span>
+          </div>`;
+      }).join('');
+    }
+  </script>
+
+</body>
+</html>

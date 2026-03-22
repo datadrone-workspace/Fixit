@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Profile — FixIt</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .profile-page { padding: 40px 80px 80px; max-width: 860px; margin: 0 auto; }
+
+    /* ── PROFILE HEADER ── */
+    .profile-hero {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+      border-radius: var(--radius-xl);
+      padding: 40px;
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      margin-bottom: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .profile-hero::before {
+      content: '';
+      position: absolute;
+      top: -80px; right: -80px;
+      width: 280px; height: 280px;
+      background: radial-gradient(circle, rgba(255,107,53,0.15) 0%, transparent 70%);
+    }
+
+    .profile-avatar {
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      background: var(--orange);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--white);
+      flex-shrink: 0;
+      box-shadow: 0 0 0 4px rgba(255,107,53,0.3);
+    }
+
+    .profile-hero-info {}
+
+    .profile-hero-name {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--white);
+      margin-bottom: 4px;
+    }
+
+    .profile-hero-email {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.55);
+      margin-bottom: 12px;
+    }
+
+    .profile-hero-badges { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    .profile-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 12px;
+      border-radius: 100px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      background: rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.8);
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+
+    /* ── SECTIONS ── */
+    .profile-section {
+      background: var(--white);
+      border: 1.5px solid var(--gray-border);
+      border-radius: var(--radius-lg);
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+
+    .profile-section-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--gray-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .profile-section-title {
+      font-family: var(--font-display);
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--navy);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .profile-section-icon {
+      width: 32px; height: 32px;
+      border-radius: var(--radius-sm);
+      background: var(--orange-pale);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.9rem;
+    }
+
+    .profile-section-body { padding: 24px; }
+
+    /* ── FIELD ROWS ── */
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .field-row:last-child { margin-bottom: 0; }
+    .field-single { margin-bottom: 20px; }
+    .field-single:last-child { margin-bottom: 0; }
+
+    .field-group {}
+    .field-label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--gray-mid);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 7px;
+      display: block;
+    }
+
+    .field-value {
+      font-size: 0.92rem;
+      color: var(--navy);
+      font-weight: 500;
+      padding: 10px 0;
+      border-bottom: 1.5px solid transparent;
+    }
+
+    .field-input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid var(--gray-border);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      color: var(--navy);
+      background: var(--white);
+      transition: border-color 0.2s;
+    }
+
+    .field-input:focus { outline: none; border-color: var(--orange); }
+
+    /* Edit / Save button per section */
+    .section-edit-btn {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--orange);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      transition: background 0.2s;
+    }
+
+    .section-edit-btn:hover { background: var(--orange-pale); }
+
+    /* ── PREFERENCES ── */
+    .pref-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    .pref-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      border: 1.5px solid var(--gray-border);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .pref-item:hover { border-color: var(--orange); }
+    .pref-item.active { border-color: var(--orange); background: var(--orange-pale); }
+
+    .pref-check {
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      border: 2px solid var(--gray-border);
+      flex-shrink: 0;
+      transition: all 0.2s;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.6rem;
+    }
+
+    .pref-item.active .pref-check {
+      background: var(--orange);
+      border-color: var(--orange);
+      color: white;
+    }
+
+    .pref-icon { font-size: 1.2rem; }
+    .pref-name { font-size: 0.85rem; font-weight: 500; color: var(--navy); }
+
+    /* ── DANGER ZONE ── */
+    .danger-zone {
+      background: #FEF2F2;
+      border: 1.5px solid #FECACA;
+      border-radius: var(--radius-lg);
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .danger-text { font-size: 0.85rem; color: #7F1D1D; line-height: 1.5; }
+    .danger-text strong { color: #991B1B; display: block; margin-bottom: 2px; }
+
+    .btn-danger {
+      background: #EF4444;
+      color: white;
+      border: none;
+      flex-shrink: 0;
+    }
+    .btn-danger:hover { background: #DC2626; }
+
+    /* ── MEMBER SINCE ── */
+    .member-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.6);
+      margin-top: 8px;
+    }
+
+    @media (max-width: 768px) {
+      .profile-page { padding: 24px 20px 60px; }
+      .profile-hero { flex-direction: column; text-align: center; padding: 28px 20px; }
+      .profile-hero-badges { justify-content: center; }
+      .field-row { grid-template-columns: 1fr; }
+      .pref-grid { grid-template-columns: 1fr; }
+      .danger-zone { flex-direction: column; }
+    }
+  </style>
+  <script>
+    !function(){var i="analytics",analytics=window[i]=window[i]||[];if(!analytics.initialize)if(analytics.invoked)window.console&&console.error&&console.error("Segment snippet included twice.");else{analytics.invoked=!0;analytics.methods=["trackSubmit","trackClick","trackLink","trackForm","pageview","identify","reset","group","track","ready","alias","debug","page","screen","once","off","on","addSourceMiddleware","addIntegrationMiddleware","setAnonymousId","addDestinationMiddleware","register"];analytics.factory=function(e){return function(){if(window[i].initialized)return window[i][e].apply(window[i],arguments);var n=Array.prototype.slice.call(arguments);if(["track","screen","alias","group","page","identify"].indexOf(e)>-1){var c=document.querySelector("link[rel='canonical']");n.push({__t:"bpc",c:c&&c.getAttribute("href")||void 0,p:location.pathname,u:location.href,s:location.search,t:document.title,r:document.referrer})}n.unshift(e);analytics.push(n);return analytics}};for(var n=0;n<analytics.methods.length;n++){var key=analytics.methods[n];analytics[key]=analytics.factory(key)}analytics.load=function(key,n){var t=document.createElement("script");t.type="text/javascript";t.async=!0;t.setAttribute("data-global-segment-analytics-key",i);t.src="https://cdn.segment.com/analytics.js/v1/"+key+"/analytics.min.js";var r=document.getElementsByTagName("script")[0];r.parentNode.insertBefore(t,r);analytics._loadOptions=n};analytics._writeKey="YOUR_WRITE_KEY";analytics._cdn="https://cdn.segment.com";analytics.SNIPPET_VERSION="5.2.1";
+    analytics.load("YOUR_WRITE_KEY");
+    }}();
+  </script>
+</head>
+<body>
+
+  <div id="navbarRoot"></div>
+  <div id="authModalRoot"></div>
+
+  <main class="page-content">
+    <div class="profile-page">
+
+      <!-- Profile Hero -->
+      <div class="profile-hero" id="profileHero"></div>
+
+      <!-- Personal Info -->
+      <div class="profile-section">
+        <div class="profile-section-header">
+          <div class="profile-section-title">
+            <div class="profile-section-icon">👤</div>
+            Personal Information
+          </div>
+          <button class="section-edit-btn" id="personalEditBtn" onclick="togglePersonalEdit()">Edit</button>
+        </div>
+        <div class="profile-section-body" id="personalBody"></div>
+      </div>
+
+      <!-- Contact Info -->
+      <div class="profile-section">
+        <div class="profile-section-header">
+          <div class="profile-section-title">
+            <div class="profile-section-icon">📞</div>
+            Contact & Address
+          </div>
+          <button class="section-edit-btn" id="contactEditBtn" onclick="toggleContactEdit()">Edit</button>
+        </div>
+        <div class="profile-section-body" id="contactBody"></div>
+      </div>
+
+      <!-- Service Preferences -->
+      <div class="profile-section">
+        <div class="profile-section-header">
+          <div class="profile-section-title">
+            <div class="profile-section-icon">⚙️</div>
+            Service Preferences
+          </div>
+          <button class="section-edit-btn" onclick="savePreferences()">Save</button>
+        </div>
+        <div class="profile-section-body">
+          <p style="font-size:0.82rem;color:var(--gray-mid);margin-bottom:16px">Select the services you're most likely to use. We'll personalize your experience based on this.</p>
+          <div class="pref-grid" id="prefGrid"></div>
+        </div>
+      </div>
+
+      <!-- Danger Zone -->
+      <div class="danger-zone">
+        <div class="danger-text">
+          <strong>Log out of your account</strong>
+          You'll need to sign in again to access your bookings and profile.
+        </div>
+        <button class="btn btn-danger btn-sm" onclick="handleLogout()">Log Out</button>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+  <script>
+    document.getElementById('navbarRoot').innerHTML = renderNavbar('Profile');
+    document.getElementById('authModalRoot').innerHTML = renderAuthModal();
+
+    let user = Auth.require();
+    let personalEditing = false;
+    let contactEditing = false;
+
+    // Segment: Profile Page Viewed
+    Segment.track('Profile Page Viewed', {});
+
+    // ── Hero ──
+    function renderHero() {
+      const initials = user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+      const bookings = (Store.get('bookings') || []).filter(b => b.userId === user.id);
+      const completed = bookings.filter(b => b.status === 'completed').length;
+      const memberSince = new Date(user.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
+      document.getElementById('profileHero').innerHTML = `
+        <div class="profile-avatar">${initials}</div>
+        <div class="profile-hero-info">
+          <div class="profile-hero-name">${user.name}</div>
+          <div class="profile-hero-email">${user.email}</div>
+          <div class="profile-hero-badges">
+            <span class="profile-badge">⭐ ${bookings.length} Bookings</span>
+            <span class="profile-badge">✓ ${completed} Completed</span>
+          </div>
+          <div class="member-tag">📅 Member since ${memberSince}</div>
+        </div>
+      `;
+    }
+
+    // ── Personal Info ──
+    function renderPersonalView() {
+      document.getElementById('personalEditBtn').textContent = 'Edit';
+      document.getElementById('personalBody').innerHTML = `
+        <div class="field-row">
+          <div class="field-group">
+            <span class="field-label">Full Name</span>
+            <div class="field-value">${user.name || '—'}</div>
+          </div>
+          <div class="field-group">
+            <span class="field-label">Email Address</span>
+            <div class="field-value">${user.email || '—'}</div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderPersonalEdit() {
+      document.getElementById('personalEditBtn').textContent = 'Save';
+      document.getElementById('personalBody').innerHTML = `
+        <div class="field-row">
+          <div class="field-group">
+            <label class="form-label">Full Name</label>
+            <input class="field-input" id="editName" value="${user.name || ''}" placeholder="Your full name">
+          </div>
+          <div class="field-group">
+            <label class="form-label">Email Address</label>
+            <input class="field-input" value="${user.email}" disabled style="background:var(--gray-light);color:var(--gray-mid);cursor:not-allowed">
+          </div>
+        </div>
+      `;
+    }
+
+    function togglePersonalEdit() {
+      if (!personalEditing) {
+        personalEditing = true;
+        renderPersonalEdit();
+      } else {
+        const newName = document.getElementById('editName').value.trim();
+        if (!newName) { Toast.show('Name cannot be empty', 'error'); return; }
+
+        const oldName = user.name;
+        if (newName !== oldName) {
+          // Update storage
+          user.name = newName;
+          Store.set('currentUser', user);
+          Store.update('users', user.id, { name: newName });
+
+          // Segment: Profile Name Updated
+          Segment.track('Profile Name Updated', {});
+          Toast.show('Name updated successfully!');
+          renderHero();
+        }
+
+        personalEditing = false;
+        renderPersonalView();
+      }
+    }
+
+    // ── Contact Info ──
+    function renderContactView() {
+      document.getElementById('contactEditBtn').textContent = 'Edit';
+      document.getElementById('contactBody').innerHTML = `
+        <div class="field-row">
+          <div class="field-group">
+            <span class="field-label">Phone Number</span>
+            <div class="field-value">${user.phone || '—'}</div>
+          </div>
+          <div class="field-group">
+            <span class="field-label">City</span>
+            <div class="field-value">${user.city || '—'}</div>
+          </div>
+        </div>
+        <div class="field-single">
+          <span class="field-label">Street Address</span>
+          <div class="field-value">${user.address || '—'}</div>
+        </div>
+      `;
+    }
+
+    function renderContactEdit() {
+      document.getElementById('contactEditBtn').textContent = 'Save';
+      document.getElementById('contactBody').innerHTML = `
+        <div class="field-row">
+          <div class="field-group">
+            <label class="form-label">Phone Number</label>
+            <input class="field-input" id="editPhone" value="${user.phone || ''}" placeholder="+1 555 000 0000">
+          </div>
+          <div class="field-group">
+            <label class="form-label">City</label>
+            <input class="field-input" id="editCity" value="${user.city || ''}" placeholder="New York">
+          </div>
+        </div>
+        <div class="field-single">
+          <label class="form-label">Street Address</label>
+          <input class="field-input" id="editAddress" value="${user.address || ''}" placeholder="123 Main Street">
+        </div>
+      `;
+    }
+
+    function toggleContactEdit() {
+      if (!contactEditing) {
+        contactEditing = true;
+        renderContactEdit();
+      } else {
+        const newPhone = document.getElementById('editPhone').value.trim();
+        const newCity = document.getElementById('editCity').value.trim();
+        const newAddress = document.getElementById('editAddress').value.trim();
+
+        const phoneChanged = newPhone !== user.phone;
+        const cityChanged = newCity !== user.city;
+        const addressChanged = newAddress !== user.address;
+
+        if (phoneChanged) {
+          user.phone = newPhone;
+          Segment.track('Profile Phone Updated', {});
+        }
+
+        if (cityChanged || addressChanged) {
+          user.city = newCity;
+          user.address = newAddress;
+          // Only send city — no full address in event for privacy
+          Segment.track('Profile Address Updated', { city: newCity });
+        }
+
+        if (phoneChanged || cityChanged || addressChanged) {
+          Store.set('currentUser', user);
+          Store.update('users', user.id, { phone: newPhone, city: newCity, address: newAddress });
+          Toast.show('Contact details updated!');
+        }
+
+        contactEditing = false;
+        renderContactView();
+      }
+    }
+
+    // ── Preferences ──
+    const PREFS = [
+      { id: 'plumbing', icon: '🔧', label: 'Plumbing' },
+      { id: 'electrical', icon: '⚡', label: 'Electrical' },
+      { id: 'cleaning', icon: '🧹', label: 'Cleaning' },
+      { id: 'carpentry', icon: '🪚', label: 'Carpentry' },
+    ];
+
+    let selectedPrefs = user.preferences || [];
+
+    function renderPrefs() {
+      document.getElementById('prefGrid').innerHTML = PREFS.map(p => `
+        <div class="pref-item ${selectedPrefs.includes(p.id) ? 'active' : ''}" onclick="togglePref('${p.id}')">
+          <div class="pref-check">${selectedPrefs.includes(p.id) ? '✓' : ''}</div>
+          <span class="pref-icon">${p.icon}</span>
+          <span class="pref-name">${p.label}</span>
+        </div>
+      `).join('');
+    }
+
+    function togglePref(id) {
+      if (selectedPrefs.includes(id)) {
+        selectedPrefs = selectedPrefs.filter(p => p !== id);
+      } else {
+        selectedPrefs.push(id);
+      }
+      renderPrefs();
+    }
+
+    function savePreferences() {
+      user.preferences = selectedPrefs;
+      Store.set('currentUser', user);
+      Store.update('users', user.id, { preferences: selectedPrefs });
+      Toast.show('Preferences saved!');
+    }
+
+    // ── Logout ──
+    function handleLogout() {
+      Auth.logout();
+      Toast.show('Logged out. See you soon!');
+      setTimeout(() => window.location.href = 'index.html', 800);
+    }
+
+    // ── Init ──
+    renderHero();
+    renderPersonalView();
+    renderContactView();
+    renderPrefs();
+  </script>
+
+</body>
+</html>
